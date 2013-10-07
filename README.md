@@ -1,4 +1,4 @@
-Listens to AMQP messages and sends them to websockets client.
+Listen to AMQP messages and send them to websockets clients.
 
 Disclaimer: This is my first Go project and I might be doing it wrong.
 
