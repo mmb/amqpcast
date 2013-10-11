@@ -8,9 +8,17 @@ const indexTemplate = `
 <title>amqpcast</title>
 <meta charset="utf-8">
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
+<style>
+#messages {
+  font-family: monospace;
+}
+</style>
 </head>
 
 <body>
+
+<h1>amqpcast</h1>
+
 <div id="messages"></div>
 
 <script>
@@ -22,7 +30,7 @@ $(function() {
     };
 
     ws.onmessage = function(e) {
-        $('#messages').prepend($("<p/>").append(e.data));
+        $('#messages').prepend($("<p/>").append(new Date() + ' ' + e.data));
     };
 
     ws.onclose = function(e) {
