@@ -36,5 +36,6 @@ func InitHttp(c *Caster) {
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(createWebsocketHandler(c)))
 
+	log.Println("listening to http on :12345")
 	go http.ListenAndServe(":12345", nil)
 }
