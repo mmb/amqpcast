@@ -25,7 +25,7 @@ func createWebsocketHandler(cstr *Caster) func(ws *websocket.Conn) {
 }
 
 func homeHandler(w http.ResponseWriter, r *http.Request) {
-	t, err := template.ParseFiles("index.html")
+	t, err := template.New("index").Parse(indexTemplate)
 	if err != nil {
 		log.Fatal(err)
 	}
