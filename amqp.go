@@ -14,6 +14,7 @@ func handleDeliveries(deliveries <-chan amqp.Delivery, cstr *Caster) {
 }
 
 func InitAmqp(amqpUrl *string, amqpExchange *string, amqpKey *string, cstr *Caster) {
+	log.Printf("connecting to %s", *amqpUrl)
 	amqpConn, err := amqp.Dial(*amqpUrl)
 	if err != nil {
 		log.Fatal(err)
@@ -36,6 +37,7 @@ func InitAmqp(amqpUrl *string, amqpExchange *string, amqpKey *string, cstr *Cast
 		log.Fatal(err)
 	}
 
+	log.Printf("listening to exchange '%s' key '%s'", *amqpExchange, *amqpKey)
 	amqpChannel.QueueBind(
 		queue.Name,
 		*amqpKey,
