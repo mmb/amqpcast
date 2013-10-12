@@ -23,7 +23,7 @@ const indexTemplate = `
 
 <script>
 $(function() {
-    var ws = new WebSocket("ws://localhost:12345/ws");
+    var ws = new WebSocket("ws://" + window.location.host + "/ws")
 
     ws.onopen = function() {
         console.log("websocket open");
