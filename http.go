@@ -32,10 +32,10 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
-func InitHttp(c *Caster) {
+func InitHttp(listen *string, c *Caster) {
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(createWebsocketHandler(c)))
 
-	log.Println("listening to http on :12345")
-	go http.ListenAndServe(":12345", nil)
+	log.Printf("listening to http on %s", *listen)
+	go http.ListenAndServe(*listen, nil)
 }
