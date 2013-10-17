@@ -10,7 +10,14 @@ const indexTemplate = `
 <script src="http://code.jquery.com/jquery-2.0.3.min.js"></script>
 <style>
 #messages {
-  font-family: monospace;
+  background-color: black;
+  color: #3f0;
+  padding : 1em;
+}
+
+.time {
+  color: #ccc;
+  margin-right: 1em;
 }
 </style>
 </head>
@@ -19,7 +26,7 @@ const indexTemplate = `
 
 <h1>amqpcast</h1>
 
-<div id="messages"></div>
+<pre id="messages"></pre>
 
 <script>
 $(function() {
@@ -30,7 +37,13 @@ $(function() {
     };
 
     ws.onmessage = function(e) {
-        $('#messages').prepend($("<p/>").append(new Date() + ' ' + e.data));
+        var dateSpan = $('<span/>').addClass('time').append(
+            (new Date()).toISOString()),
+            messageSpan = $('<span/>').addClass('message').append(e.data);
+        $('#messages').prepend(
+            $('<br/>')).prepend(
+            messageSpan).prepend(
+            dateSpan);
     };
 
     ws.onclose = function(e) {
