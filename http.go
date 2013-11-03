@@ -11,8 +11,8 @@ import (
 func createWebsocketHandler(cstr *Caster) func(ws *websocket.Conn) {
 	return func(ws *websocket.Conn) {
 		c := &Connection{
-			Ws:       ws,
-			Outbound: make(chan string, 256),
+			ws:       ws,
+			outbound: make(chan string, 256),
 		}
 
 		cstr.Create <- c

@@ -5,13 +5,13 @@ import (
 )
 
 type Connection struct {
-	Ws       *websocket.Conn
-	Outbound chan string
+	ws       *websocket.Conn
+	outbound chan string
 }
 
 func (c *Connection) write() {
-	for message := range c.Outbound {
-		err := websocket.Message.Send(c.Ws, message)
+	for message := range c.outbound {
+		err := websocket.Message.Send(c.ws, message)
 		if err != nil {
 			break
 		}
@@ -21,9 +21,14 @@ func (c *Connection) write() {
 func (c *Connection) read() {
 	for {
 		var message string
-		err := websocket.Message.Receive(c.Ws, &message)
+		err := websocket.Message.Receive(c.ws, &message)
 		if err != nil {
 			break
 		}
 	}
+}
+
+func (c *Connection) close() {
+	c.ws.Close()
+	close(c.outbound)
 }
