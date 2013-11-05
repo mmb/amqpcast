@@ -8,15 +8,15 @@ import (
 	"code.google.com/p/go.net/websocket"
 )
 
-func createWebsocketHandler(cstr *Caster) func(ws *websocket.Conn) {
+func createWebsocketHandler(cstr *caster) func(ws *websocket.Conn) {
 	return func(ws *websocket.Conn) {
-		c := &Connection{
+		c := &connection{
 			ws:       ws,
 			outbound: make(chan string, 256),
 		}
 
-		cstr.Create <- c
-		defer func() { cstr.Destroy <- c }()
+		cstr.create <- c
+		defer func() { cstr.destroy <- c }()
 
 		go c.write()
 
@@ -32,7 +32,7 @@ func homeHandler(w http.ResponseWriter, r *http.Request) {
 	t.Execute(w, nil)
 }
 
-func InitHttp(listen *string, c *Caster) {
+func InitHttp(listen *string, c *caster) {
 	http.HandleFunc("/", homeHandler)
 	http.Handle("/ws", websocket.Handler(createWebsocketHandler(c)))
 

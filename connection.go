@@ -4,12 +4,12 @@ import (
 	"code.google.com/p/go.net/websocket"
 )
 
-type Connection struct {
+type connection struct {
 	ws       *websocket.Conn
 	outbound chan string
 }
 
-func (c *Connection) write() {
+func (c *connection) write() {
 	for message := range c.outbound {
 		err := websocket.Message.Send(c.ws, message)
 		if err != nil {
@@ -18,7 +18,7 @@ func (c *Connection) write() {
 	}
 }
 
-func (c *Connection) read() {
+func (c *connection) read() {
 	for {
 		var message string
 		err := websocket.Message.Receive(c.ws, &message)
@@ -28,7 +28,7 @@ func (c *Connection) read() {
 	}
 }
 
-func (c *Connection) close() {
+func (c *connection) close() {
 	c.ws.Close()
 	close(c.outbound)
 }

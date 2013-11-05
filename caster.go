@@ -5,54 +5,54 @@ import (
 	"sync"
 )
 
-type Caster struct {
+type caster struct {
 	sync.RWMutex
-	Connections map[*Connection]bool
-	Create      chan *Connection
-	Destroy     chan *Connection
-	Outbound    chan string
+	connections map[*connection]bool
+	create      chan *connection
+	destroy     chan *connection
+	outbound    chan string
 }
 
-func NewCaster() *Caster {
-	return &Caster{
-		Connections: make(map[*Connection]bool),
-		Create:      make(chan *Connection),
-		Destroy:     make(chan *Connection),
-		Outbound:    make(chan string, 256),
+func NewCaster() *caster {
+	return &caster{
+		connections: make(map[*connection]bool),
+		create:      make(chan *connection),
+		destroy:     make(chan *connection),
+		outbound:    make(chan string, 256),
 	}
 }
 
-func (cstr *Caster) Run() {
+func (cstr *caster) Run() {
 	for {
 		select {
-		case c := <-cstr.Create:
+		case c := <-cstr.create:
 			log.Printf("new client")
 			cstr.createConnection(c)
-		case c := <-cstr.Destroy:
+		case c := <-cstr.destroy:
 			log.Printf("client closed")
 			cstr.destroyConnection(c)
-		case m := <-cstr.Outbound:
+		case m := <-cstr.outbound:
 			cstr.distributeMessage(m)
 		}
 	}
 }
 
-func (cstr *Caster) createConnection(c *Connection) {
+func (cstr *caster) createConnection(c *connection) {
 	cstr.Lock()
-	cstr.Connections[c] = true
+	cstr.connections[c] = true
 	cstr.Unlock()
 }
 
-func (cstr *Caster) destroyConnection(c *Connection) {
+func (cstr *caster) destroyConnection(c *connection) {
 	cstr.Lock()
-	delete(cstr.Connections, c)
+	delete(cstr.connections, c)
 	cstr.Unlock()
 	c.close()
 }
 
-func (cstr *Caster) distributeMessage(m string) {
+func (cstr *caster) distributeMessage(m string) {
 	cstr.RLock()
-	for c, _ := range cstr.Connections {
+	for c, _ := range cstr.connections {
 		c.outbound <- m
 	}
 	cstr.RUnlock()

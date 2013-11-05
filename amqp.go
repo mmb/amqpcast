@@ -6,14 +6,14 @@ import (
 	"github.com/streadway/amqp"
 )
 
-func handleDeliveries(deliveries <-chan amqp.Delivery, cstr *Caster) {
+func handleDeliveries(deliveries <-chan amqp.Delivery, cstr *caster) {
 	for d := range deliveries {
 		log.Printf("received AMQP message (%dB): %q", len(d.Body), d.Body)
-		cstr.Outbound <- string(d.Body[:])
+		cstr.outbound <- string(d.Body[:])
 	}
 }
 
-func InitAmqp(amqpUrl *string, amqpExchange *string, amqpKey *string, cstr *Caster) {
+func InitAmqp(amqpUrl *string, amqpExchange *string, amqpKey *string, cstr *caster) {
 	log.Printf("connecting to %s", *amqpUrl)
 	amqpConn, err := amqp.Dial(*amqpUrl)
 	if err != nil {
