@@ -13,6 +13,15 @@ type Caster struct {
 	Outbound    chan string
 }
 
+func NewCaster() *Caster {
+	return &Caster{
+		Connections: make(map[*Connection]bool),
+		Create:      make(chan *Connection),
+		Destroy:     make(chan *Connection),
+		Outbound:    make(chan string, 256),
+	}
+}
+
 func (cstr *Caster) Run() {
 	for {
 		select {
